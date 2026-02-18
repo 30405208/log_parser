@@ -1,49 +1,53 @@
-#print("Hello, World!")
-
-#Take in data
-
-# Example log line: "2026-02-17 10:00 ERROR Something failed"
-
-with open("../../logs/sample.log", "r", encoding="utf-8") as file:
-    for line in file:
-        line = line.strip()  # remove newline
-        if not line:
-            continue  # skip empty lines
-
-        # Split the line into parts
-        parts = line.split(" ")
-
-        # Create a dictionary for this line
-        log_entry = {
-            "date": parts[0],
-            "time": parts[1],
-            "level": parts[2],
-            "message": " ".join(parts[3:])  # join the rest of the line
-        }
-
-        # Now you can access fields like a structured object
-        #print(log_entry["date"], log_entry["level"], log_entry["message"])
-
-        x = log_entry["date"]
-        print(x)
+# Make terminal command work
+def main():
+    log_file = choose_log_file(LOGS_FOLDER)
+    dispatch_log(log_file)
 
 
+if __name__ == "__main__":
+    main()
 
+# --------------------------
 
+from log_dispatcher import dispatch_log
+import os
+import questionary
 
-# Workflow:
+# --------------------------
+# Logs folder path
+# --------------------------
+LOGS_FOLDER = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../logs"))
 
+# --------------------------
+# Interactive file picker
+# --------------------------
+def choose_log_file(folder_path):
+    # Only include supported log file types
+    supported_exts = ['.txt', '.log', '.json', '.csv', '.xml']
 
-# Dispacher - Returns the file type
+    files = [f for f in os.listdir(folder_path)
+             if os.path.isfile(os.path.join(folder_path, f)) and os.path.splitext(f)[1].lower() in supported_exts]
 
-# Support for .txt
-# Support for .log
-# Support for .json
-# Support for .csv
-# Support for .xml
+    if not files:
+        print("No log files found in logs folder.")
+        exit(1)
 
-# Generate logs in 
-# /Users/andy/Library/CloudStorage/GoogleDrive-wells.andrew.uk@gmail.com/My Drive/work/python/log_parser/logs
-# Usage: python3 generate_logs.py
+    selected_file = questionary.select(
+        "Select a log file:",
+        choices=files
+    ).ask()
 
+    if selected_file is None:
+        print("No file selected. Exiting.")
+        exit(0)
 
+    return os.path.join(folder_path, selected_file)
+
+# --------------------------
+# Main
+# --------------------------
+if __name__ == "__main__":
+    log_file = choose_log_file(LOGS_FOLDER)
+    dispatch_log(log_file)
+
+# --------------------------
