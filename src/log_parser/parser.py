@@ -34,6 +34,8 @@ def choose_log_file(folder_path):
 
     return os.path.join(folder_path, selected_file)
 
+
+
 # --------------------------
 # Main function
 # --------------------------
