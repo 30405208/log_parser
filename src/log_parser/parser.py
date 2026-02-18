@@ -26,3 +26,24 @@ with open("../../logs/sample.log", "r", encoding="utf-8") as file:
 
         x = log_entry["date"]
         print(x)
+
+
+
+
+
+# Workflow:
+
+
+# Dispacher - Returns the file type
+
+# Support for .txt
+# Support for .log
+# Support for .json
+# Support for .csv
+# Support for .xml
+
+# Generate logs in 
+# /Users/andy/Library/CloudStorage/GoogleDrive-wells.andrew.uk@gmail.com/My Drive/work/python/log_parser/logs
+# Usage: python3 generate_logs.py
+
+
