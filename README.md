@@ -10,6 +10,7 @@ extracts log levels, and summarises activity.
 -   Interactive log selection
 -   Error / Warning / Info extraction
 -   Summary reporting
+-   Optional CSV export with preview
 
 ------------------------------------------------------------------------
 
@@ -17,9 +18,11 @@ extracts log levels, and summarises activity.
 
     log_parser/
     ├── logs/                # Generated test logs
+    ├── output/              # CSV export folder
     ├── src/log_parser/
     │   ├── parser.py        # CLI entry point
     │   ├── log_dispatcher.py
+    │   ├── export_csv.py
     │   └── generate_logs.py
     └── pyproject.toml
 
@@ -37,6 +40,14 @@ Install dependencies:
 ``` bash
 poetry install
 ```
+
+**Optional:** for prettier CSV preview tables in the terminal:
+
+``` bash
+poetry add tabulate
+```
+
+If `tabulate` is not installed, the preview will still appear in plain text.
 
 ------------------------------------------------------------------------
 
@@ -70,6 +81,7 @@ You will:
 2.  Select one using arrow keys
 3.  Press Enter
 4.  View a structured summary
+5.  Optionally export the processed logs to CSV (with a preview)
 
 ------------------------------------------------------------------------
 
@@ -89,6 +101,16 @@ You will:
     --- Error Lines ---
     2026-02-18 11:58:39 ERROR Database connection failed
     2026-02-18 12:01:12 ERROR Timeout occurred
+
+    --- CSV Export Preview ---
+    +---------------------+---------+-------------------------------+
+    | timestamp           | level   | message                       |
+    +---------------------+---------+-------------------------------+
+    | 2026-02-18 11:50:12 | INFO    | User logged in                |
+    | 2026-02-18 11:51:07 | WARNING | Disk space low                |
+    | 2026-02-18 11:52:34 | ERROR   | Failed login attempt          |
+    +---------------------+---------+-------------------------------+
+    ...and 497 more rows
 
 ------------------------------------------------------------------------
 
@@ -114,6 +136,7 @@ For each log file:
 -   Counts occurrences
 -   Prints summary statistics
 -   Displays full error entries
+-   Optionally previews and exports logs to CSV
 
 ------------------------------------------------------------------------
 
@@ -124,3 +147,4 @@ For each log file:
 -   Time-based filtering
 -   Pattern detection
 -   Recurring error analysis
+
