@@ -1,17 +1,8 @@
-# Make terminal command work
-def main():
-    log_file = choose_log_file(LOGS_FOLDER)
-    dispatch_log(log_file)
+# src/log_parser/parser.py
 
-
-if __name__ == "__main__":
-    main()
-
-# --------------------------
-
-from log_dispatcher import dispatch_log
 import os
 import questionary
+from .log_dispatcher import dispatch_log
 
 # --------------------------
 # Logs folder path
@@ -44,10 +35,14 @@ def choose_log_file(folder_path):
     return os.path.join(folder_path, selected_file)
 
 # --------------------------
-# Main
+# Main function
 # --------------------------
-if __name__ == "__main__":
+def main():
     log_file = choose_log_file(LOGS_FOLDER)
     dispatch_log(log_file)
 
 # --------------------------
+# Run as CLI
+# --------------------------
+if __name__ == "__main__":
+    main()
