@@ -1,0 +1,77 @@
+[
+    {
+        "timestamp": "2026-02-18 04:37:06",
+        "level": "ERROR",
+        "message": "file deleted by user alice"
+    },
+    {
+        "timestamp": "2026-02-18 09:45:35",
+        "level": "ERROR",
+        "message": "file deleted by user eve"
+    },
+    {
+        "timestamp": "2026-02-18 10:08:54",
+        "level": "ERROR",
+        "message": "database connection timeout by user admin"
+    },
+    {
+        "timestamp": "2026-02-17 15:59:41",
+        "level": "INFO",
+        "message": "logged in by user alice"
+    },
+    {
+        "timestamp": "2026-02-18 03:44:49",
+        "level": "INFO",
+        "message": "file deleted by user alice"
+    },
+    {
+        "timestamp": "2026-02-18 06:05:12",
+        "level": "WARNING",
+        "message": "process terminated by user bob"
+    },
+    {
+        "timestamp": "2026-02-17 18:09:28",
+        "level": "DEBUG",
+        "message": "failed login attempt for user eve from 72.80.75.79"
+    },
+    {
+        "timestamp": "2026-02-17 12:19:39",
+        "level": "DEBUG",
+        "message": "logged in by user eve"
+    },
+    {
+        "timestamp": "2026-02-18 04:03:31",
+        "level": "DEBUG",
+        "message": "disk space low by user john"
+    },
+    {
+        "timestamp": "2026-02-17 15:05:50",
+        "level": "WARNING",
+        "message": "disk space low by user eve"
+    },
+    {
+        "timestamp": "2026-02-17 15:31:45",
+        "level": "DEBUG",
+        "message": "failed login attempt for user alice from 247.89.53.27"
+    },
+    {
+        "timestamp": "2026-02-18 06:14:30",
+        "level": "DEBUG",
+        "message": "configuration updated by user mary"
+    },
+    {
+        "timestamp": "2026-02-18 08:48:19",
+        "level": "ERROR",
+        "message": "failed login attempt for user eve from 141.181.34.60"
+    },
+    {
+        "timestamp": "2026-02-17 16:21:53",
+        "level": "INFO",
+        "message": "logged in by user john"
+    },
+    {
+        "timestamp": "2026-02-17 13:27:17",
+        "level": "DEBUG",
+        "message": "permission denied by user mary"
+    }
+]
