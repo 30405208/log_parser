@@ -1,197 +1,80 @@
-# log_dispatcher.py
-
-########
-# Dispatcher
-########
-
-
-# Dispacher - Returns the file type
-
-# Support for .txt
-# Support for .log
-# Support for .json
-# Support for .csv
-# Support for .xml
-
-# Generate logs in 
-# /Users/andy/Library/CloudStorage/GoogleDrive-wells.andrew.uk@gmail.com/My Drive/work/python/log_parser/logs
-# Usage: python3 generate_logs.py
-
-
-#here’s a complete Python dispatcher that:
-#Reads minimal lines/bytes
-#Detects TXT/LOG, JSON, CSV, XML
-#Uses fast heuristics first
-#Falls back to lightweight parsing for the edge cases (the 1%)
-#Dispatches to the correct parser function
-
-# log_dispatcher.py
 import os
 import json
 import csv
 import xml.etree.ElementTree as ET
+from .export_csv import export_to_csv_from_logs
 
 # --------------------------
 # Parser functions
 # --------------------------
 def process_txt(path):
+    """Parse TXT or LOG files"""
     print(f"Processing TXT log: {path}")
+    logs = []
 
-    error_lines = []
-    warning_lines = []
-    info_lines = []
-    total_lines = 0
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            # Example format: "2026-02-17 09:15:21 INFO User logged in"
+            parts = line.split(" ", 2)
+            if len(parts) == 3:
+                timestamp = parts[0] + " " + parts[1]
+                level = parts[2].split(" ")[0]
+                message = " ".join(parts[2].split(" ")[1:])
+                logs.append({"timestamp": timestamp, "level": level, "message": message})
 
-    try:
-        with open(path, 'r', encoding='utf-8', errors='ignore') as f:
-            for line in f:
-                total_lines += 1
-                lower = line.lower()
+    export_to_csv_from_logs(logs, default_filename=os.path.basename(path).replace(".txt", "_summary.csv"))
+    return logs
 
-                if "error" in lower:
-                    error_lines.append(line.strip())
-                elif "warning" in lower:
-                    warning_lines.append(line.strip())
-                elif "info" in lower:
-                    info_lines.append(line.strip())
-
-    except Exception as e:
-        print(f"Failed to read file: {e}")
-        return
-
-    # ---- Summary ----
-    print("\n--- Log Summary ---")
-    print(f"Total lines: {total_lines}")
-    print(f"INFO: {len(info_lines)}")
-    print(f"WARNING: {len(warning_lines)}")
-    print(f"ERROR: {len(error_lines)}")
-
-    # ---- Show Errors ----
-    if error_lines:
-        print("\n--- Error Lines ---")
-        for line in error_lines:
-            print(line)
-    else:
-        print("\nNo errors found.")
 
 def process_json(path):
+    """Parse JSON log files"""
     print(f"Processing JSON log: {path}")
-
-    error_lines = []
-    warning_lines = []
-    info_lines = []
-
-    try:
-        with open(path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-
-        if isinstance(data, dict):
-            data = [data]
-
-        total = len(data)
-
+    logs = []
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
         for entry in data:
-            level = str(entry.get("level", "")).lower()
+            logs.append({
+                "timestamp": entry.get("timestamp", ""),
+                "level": entry.get("level", ""),
+                "message": entry.get("message", "")
+            })
+    export_to_csv_from_logs(logs, default_filename=os.path.basename(path).replace(".json", "_summary.csv"))
+    return logs
 
-            if "error" in level:
-                error_lines.append(entry)
-            elif "warning" in level:
-                warning_lines.append(entry)
-            elif "info" in level:
-                info_lines.append(entry)
-
-    except Exception as e:
-        print(f"Failed to process JSON: {e}")
-        return
-
-    print("\n--- Log Summary ---")
-    print(f"Total entries: {total}")
-    print(f"INFO: {len(info_lines)}")
-    print(f"WARNING: {len(warning_lines)}")
-    print(f"ERROR: {len(error_lines)}")
-
-    if error_lines:
-        print("\n--- Error Entries ---")
-        for e in error_lines:
-            print(e)
 
 def process_csv(path):
+    """Parse CSV log files"""
     print(f"Processing CSV log: {path}")
+    logs = []
+    with open(path, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            logs.append({
+                "timestamp": row.get("timestamp", ""),
+                "level": row.get("level", ""),
+                "message": row.get("message", "")
+            })
+    export_to_csv_from_logs(logs, default_filename=os.path.basename(path).replace(".csv", "_summary.csv"))
+    return logs
 
-    error_lines = []
-    warning_lines = []
-    info_lines = []
-    total = 0
-
-    try:
-        with open(path, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-
-            for row in reader:
-                total += 1
-                level = str(row.get("level", "")).lower()
-
-                if "error" in level:
-                    error_lines.append(row)
-                elif "warning" in level:
-                    warning_lines.append(row)
-                elif "info" in level:
-                    info_lines.append(row)
-
-    except Exception as e:
-        print(f"Failed to process CSV: {e}")
-        return
-
-    print("\n--- Log Summary ---")
-    print(f"Total rows: {total}")
-    print(f"INFO: {len(info_lines)}")
-    print(f"WARNING: {len(warning_lines)}")
-    print(f"ERROR: {len(error_lines)}")
-
-    if error_lines:
-        print("\n--- Error Rows ---")
-        for e in error_lines:
-            print(e)
 
 def process_xml(path):
+    """Parse XML log files"""
     print(f"Processing XML log: {path}")
-
-    error_lines = []
-    warning_lines = []
-    info_lines = []
-    total = 0
-
-    try:
-        tree = ET.parse(path)
-        root = tree.getroot()
-
-        for entry in root.iter():
-            level = entry.find("level")
-            if level is not None:
-                total += 1
-                lvl = level.text.lower()
-
-                if "error" in lvl:
-                    error_lines.append(ET.tostring(entry, encoding='unicode'))
-                elif "warning" in lvl:
-                    warning_lines.append(ET.tostring(entry, encoding='unicode'))
-                elif "info" in lvl:
-                    info_lines.append(ET.tostring(entry, encoding='unicode'))
-
-    except Exception as e:
-        print(f"Failed to process XML: {e}")
-        return
-
-    print("\n--- Log Summary ---")
-    print(f"Total entries: {total}")
-    print(f"INFO: {len(info_lines)}")
-    print(f"WARNING: {len(warning_lines)}")
-    print(f"ERROR: {len(error_lines)}")
-
-    if error_lines:
-        print("\n--- Error Entries ---")
-        for e in error_lines:
-            print(e)
+    logs = []
+    tree = ET.parse(path)
+    root = tree.getroot()
+    for log_elem in root.findall("log"):
+        logs.append({
+            "timestamp": log_elem.findtext("timestamp", ""),
+            "level": log_elem.findtext("level", ""),
+            "message": log_elem.findtext("message", "")
+        })
+    export_to_csv_from_logs(logs, default_filename=os.path.basename(path).replace(".xml", "_summary.csv"))
+    return logs
 
 # --------------------------
 # Fast heuristic detector
@@ -268,12 +151,12 @@ def dispatch_log(file_path):
     print(f"Detected log type: {log_type}")
 
     if log_type == 'txt':
-        process_txt(file_path)
+        return process_txt(file_path)
     elif log_type == 'json':
-        process_json(file_path)
+        return process_json(file_path)
     elif log_type == 'csv':
-        process_csv(file_path)
+        return process_csv(file_path)
     elif log_type == 'xml':
-        process_xml(file_path)
+        return process_xml(file_path)
     else:
         raise ValueError(f"Unknown log type: {file_path}")
