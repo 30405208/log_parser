@@ -1,0 +1,76 @@
+timestamp,level,message
+2026-02-18,04:37:06,ERROR file deleted by user alice
+2026-02-18,09:45:35,ERROR file deleted by user eve
+2026-02-18,10:08:54,ERROR database connection timeout by user admin
+2026-02-17,15:59:41,INFO logged in by user alice
+2026-02-18,03:44:49,INFO file deleted by user alice
+2026-02-18,06:05:12,WARNING process terminated by user bob
+2026-02-17,18:09:28,DEBUG failed login attempt for user eve from 72.80.75.79
+2026-02-17,12:19:39,DEBUG logged in by user eve
+2026-02-18,04:03:31,DEBUG disk space low by user john
+2026-02-17,15:05:50,WARNING disk space low by user eve
+2026-02-17,15:31:45,DEBUG failed login attempt for user alice from 247.89.53.27
+2026-02-18,06:14:30,DEBUG configuration updated by user mary
+2026-02-18,08:48:19,ERROR failed login attempt for user eve from 141.181.34.60
+2026-02-17,16:21:53,INFO logged in by user john
+2026-02-17,13:27:17,DEBUG permission denied by user mary
+2026-02-18,04:37:06,ERROR file deleted by user alice
+2026-02-18,09:45:35,ERROR file deleted by user eve
+2026-02-18,10:08:54,ERROR database connection timeout by user admin
+2026-02-17,15:59:41,INFO logged in by user alice
+2026-02-18,03:44:49,INFO file deleted by user alice
+2026-02-18,06:05:12,WARNING process terminated by user bob
+2026-02-17,18:09:28,DEBUG failed login attempt for user eve from 72.80.75.79
+2026-02-17,12:19:39,DEBUG logged in by user eve
+2026-02-18,04:03:31,DEBUG disk space low by user john
+2026-02-17,15:05:50,WARNING disk space low by user eve
+2026-02-17,15:31:45,DEBUG failed login attempt for user alice from 247.89.53.27
+2026-02-18,06:14:30,DEBUG configuration updated by user mary
+2026-02-18,08:48:19,ERROR failed login attempt for user eve from 141.181.34.60
+2026-02-17,16:21:53,INFO logged in by user john
+2026-02-17,13:27:17,DEBUG permission denied by user mary
+2026-02-18 04:37:06,ERROR,file deleted by user alice
+2026-02-18 09:45:35,ERROR,file deleted by user eve
+2026-02-18 10:08:54,ERROR,database connection timeout by user admin
+2026-02-17 15:59:41,INFO,logged in by user alice
+2026-02-18 03:44:49,INFO,file deleted by user alice
+2026-02-18 06:05:12,WARNING,process terminated by user bob
+2026-02-17 18:09:28,DEBUG,failed login attempt for user eve from 72.80.75.79
+2026-02-17 12:19:39,DEBUG,logged in by user eve
+2026-02-18 04:03:31,DEBUG,disk space low by user john
+2026-02-17 15:05:50,WARNING,disk space low by user eve
+2026-02-17 15:31:45,DEBUG,failed login attempt for user alice from 247.89.53.27
+2026-02-18 06:14:30,DEBUG,configuration updated by user mary
+2026-02-18 08:48:19,ERROR,failed login attempt for user eve from 141.181.34.60
+2026-02-17 16:21:53,INFO,logged in by user john
+2026-02-17 13:27:17,DEBUG,permission denied by user mary
+2026-02-18 04:37:06,ERROR,file deleted by user alice
+2026-02-18 09:45:35,ERROR,file deleted by user eve
+2026-02-18 10:08:54,ERROR,database connection timeout by user admin
+2026-02-17 15:59:41,INFO,logged in by user alice
+2026-02-18 03:44:49,INFO,file deleted by user alice
+2026-02-18 06:05:12,WARNING,process terminated by user bob
+2026-02-17 18:09:28,DEBUG,failed login attempt for user eve from 72.80.75.79
+2026-02-17 12:19:39,DEBUG,logged in by user eve
+2026-02-18 04:03:31,DEBUG,disk space low by user john
+2026-02-17 15:05:50,WARNING,disk space low by user eve
+2026-02-17 15:31:45,DEBUG,failed login attempt for user alice from 247.89.53.27
+2026-02-18 06:14:30,DEBUG,configuration updated by user mary
+2026-02-18 08:48:19,ERROR,failed login attempt for user eve from 141.181.34.60
+2026-02-17 16:21:53,INFO,logged in by user john
+2026-02-17 13:27:17,DEBUG,permission denied by user mary
+2026-02-18 04:37:06,ERROR,file deleted by user alice
+2026-02-18 09:45:35,ERROR,file deleted by user eve
+2026-02-18 10:08:54,ERROR,database connection timeout by user admin
+2026-02-17 15:59:41,INFO,logged in by user alice
+2026-02-18 03:44:49,INFO,file deleted by user alice
+2026-02-18 06:05:12,WARNING,process terminated by user bob
+2026-02-17 18:09:28,DEBUG,failed login attempt for user eve from 72.80.75.79
+2026-02-17 12:19:39,DEBUG,logged in by user eve
+2026-02-18 04:03:31,DEBUG,disk space low by user john
+2026-02-17 15:05:50,WARNING,disk space low by user eve
+2026-02-17 15:31:45,DEBUG,failed login attempt for user alice from 247.89.53.27
+2026-02-18 06:14:30,DEBUG,configuration updated by user mary
+2026-02-18 08:48:19,ERROR,failed login attempt for user eve from 141.181.34.60
+2026-02-17 16:21:53,INFO,logged in by user john
+2026-02-17 13:27:17,DEBUG,permission denied by user mary
