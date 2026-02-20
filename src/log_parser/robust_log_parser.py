@@ -69,7 +69,7 @@ def filter_logs(logs: List[Dict], levels: List[str]) -> List[Dict]:
     return [l for l in logs if l.get("level","").upper() in levels_upper]
 
 def export_to_csv(logs: List[Dict], prefix="logs") -> str:
-    folder = Path("output")
+    folder = Path("../../output")
     folder.mkdir(exist_ok=True)
     filename = folder / f"{prefix}.csv"
     with open(filename,"w",newline="") as f:
@@ -91,7 +91,8 @@ def select_levels_menu() -> List[str]:
     return []  # everything
 
 def full_pipeline(folder: str = ".") -> None:
-    folder_path = Path(folder)
+    folder_path = Path(__file__).parent / "../../logs"
+    folder_path = folder_path.resolve()
     all_logs = []
     for ext in ["txt","log","csv","json","xml"]:
         for f in folder_path.glob(f"*.{ext}"):
