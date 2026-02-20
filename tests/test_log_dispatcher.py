@@ -1,40 +1,50 @@
-import os
 import pytest
-import csv
-import json
-import xml.etree.ElementTree as ET
-from log_parser import log_dispatcher
+from log_parser.log_dispatcher import dispatch_log
 
-def test_process_txt(tmp_path):
-    path = tmp_path / "test.txt"
-    path.write_text("2026-02-18 12:00:00 INFO test message")
-    logs = log_dispatcher.process_txt(str(path))
-    assert logs[0]["level"] == "INFO"
-    assert "test message" in logs[0]["message"]
+@pytest.fixture
+def sample_txt(tmp_path):
+    file = tmp_path / "sample.log"
+    file.write_text("2026-02-20 12:00:00 INFO test message")
+    return file
 
-def test_process_json(tmp_path):
-    path = tmp_path / "test.json"
-    data = [{"timestamp": "2026-02-18 12:00:00", "level": "ERROR", "message": "fail"}]
-    json.dump(data, open(path, "w"))
-    logs = log_dispatcher.process_json(str(path))
-    assert logs[0]["level"] == "ERROR"
+@pytest.fixture
+def sample_csv(tmp_path):
+    file = tmp_path / "sample.csv"
+    file.write_text("timestamp,level,message\n2026-02-20 12:00:00,INFO,test message")
+    return file
 
-def test_process_csv(tmp_path):
-    path = tmp_path / "test.csv"
-    with open(path, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["timestamp", "level", "message"])
-        writer.writeheader()
-        writer.writerow({"timestamp":"2026-02-18","level":"WARNING","message":"warn"})
-    logs = log_dispatcher.process_csv(str(path))
-    assert logs[0]["level"] == "WARNING"
+@pytest.fixture
+def sample_json(tmp_path):
+    file = tmp_path / "sample.json"
+    file.write_text('[{"timestamp": "2026-02-20 12:00:00", "level": "INFO", "message": "test message"}]')
+    return file
 
-def test_process_xml(tmp_path):
-    path = tmp_path / "test.xml"
-    root = ET.Element("logs")
-    log_elem = ET.SubElement(root, "log")
-    ET.SubElement(log_elem, "timestamp").text = "2026-02-18 12:00:00"
-    ET.SubElement(log_elem, "level").text = "INFO"
-    ET.SubElement(log_elem, "message").text = "xml test"
-    ET.ElementTree(root).write(path)
-    logs = log_dispatcher.process_xml(str(path))
-    assert logs[0]["message"] == "xml test"
+@pytest.fixture
+def sample_xml(tmp_path):
+    file = tmp_path / "sample.xml"
+    file.write_text("""
+    <logs>
+        <log>
+            <timestamp>2026-02-20 12:00:00</timestamp>
+            <level>INFO</level>
+            <message>test message</message>
+        </log>
+    </logs>
+    """)
+    return file
+
+def test_process_txt(sample_txt):
+    logs = dispatch_log(sample_txt)
+    assert logs[0]["message"] == "test message"
+
+def test_process_csv(sample_csv):
+    logs = dispatch_log(sample_csv)
+    assert logs[0]["message"] == "test message"
+
+def test_process_json(sample_json):
+    logs = dispatch_log(sample_json)
+    assert logs[0]["message"] == "test message"
+
+def test_process_xml(sample_xml):
+    logs = dispatch_log(sample_xml)
+    assert logs[0]["message"] == "test message"
