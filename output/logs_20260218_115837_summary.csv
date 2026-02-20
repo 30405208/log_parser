@@ -1,7 +1,0 @@
-timestamp,level,message
-2026-02-18 04:37:06,ERROR,file deleted by user alice
-2026-02-18 09:45:35,ERROR,file deleted by user eve
-2026-02-18 10:08:54,ERROR,database connection timeout by user admin
-2026-02-18 06:05:12,WARNING,process terminated by user bob
-2026-02-17 15:05:50,WARNING,disk space low by user eve
-2026-02-18 08:48:19,ERROR,failed login attempt for user eve from 141.181.34.60

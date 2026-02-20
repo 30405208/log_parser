@@ -17,4 +17,4 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-log_parser = "log_parser.parser:main"
+log_parser = "log_parser.robust_log_parser:main"
