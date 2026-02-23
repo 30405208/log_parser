@@ -4,7 +4,6 @@
 ![Python](https://img.shields.io/badge/python-3.13-blue)
 ![Poetry](https://img.shields.io/badge/dependency%20manager-poetry-blueviolet)
 ![Status](https://img.shields.io/badge/status-active-success)
-![Tests](https://github.com/username/repo/actions/workflows/ci.yml/badge.svg)
 
 # Tl:Dr: 
 - Drop your logs in to the logs folder
