@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-# robust_log_parser.py
+# log_parser.py
 import os
 import csv
 import json
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Dict
 
 # --- Module-level helpers ---
@@ -52,11 +52,22 @@ def dispatch_log(file_path: Path) -> List[Dict]:
     return logs
 
 def is_timestamp(s: str) -> bool:
-    try:
-        datetime.strptime(s, "%Y-%m-%d")
-        return True
-    except ValueError:
-        return False
+    # Accept ISO date or datetime
+    for fmt in ("%Y-%m-%d", "%Y-%m-%d %H:%M:%S"):
+        try:
+            datetime.strptime(s, fmt)
+            return True
+        except ValueError:
+            continue
+    return False
+
+def parse_timestamp(s: str) -> datetime:
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(s, fmt)
+        except ValueError:
+            continue
+    return None
 
 def summarize_logs(logs: List[Dict]) -> Dict[str,int]:
     counts = {}
@@ -85,12 +96,21 @@ def select_levels_menu() -> List[str]:
     print("1. Warnings only")
     print("2. Errors only")
     print("3. Warnings + Errors")
-    print("4. Everything")
-    choice = input("Enter 1,2,3,4 [4]: ").strip()
+    choice = input("Enter 1,2,3: ").strip()
     if choice=="1": return ["WARNING"]
     if choice=="2": return ["ERROR"]
     if choice=="3": return ["WARNING","ERROR"]
-    return []  # everything
+    return ["WARNING","ERROR"] # Default
+
+def filter_last_7_days(logs: List[Dict]) -> List[Dict]:
+    seven_days_ago = datetime.now() - timedelta(days=7)
+    filtered = []
+    for log in logs:
+        ts = log.get("timestamp","")
+        dt = parse_timestamp(ts)
+        if dt and dt >= seven_days_ago:
+            filtered.append(log)
+    return filtered
 
 def full_pipeline():
     # --- Project-root based folders ---
@@ -114,13 +134,20 @@ def full_pipeline():
         print("No logs found in folder.")
         return
 
-    # Summary
+    # Optional filter last 7 days
+    filter_choice = input("Filter logs from the last 7 days? (y/n) [n]: ").lower()
+    if filter_choice == "y":
+        all_logs = filter_last_7_days(all_logs)
+
+    # Summary (no timestamps)
     counts = summarize_logs(all_logs)
     print("\n--- Log Summary ---")
-    for k, v in counts.items():
-        print(f"{k}: {v}")
+    for level in ["ERROR","WARNING"]:
+        if level in counts:
+            print(f"{level}: {counts[level]}")
 
-    # Filter
+
+    # Filter by export levels
     levels_to_export = select_levels_menu()
     if levels_to_export:
         all_logs = filter_logs(all_logs, levels_to_export)

@@ -2,10 +2,16 @@ import pytest
 import csv
 import json
 import xml.etree.ElementTree as ET
-import os
 from pathlib import Path
+from datetime import datetime, timedelta
 
-from log_parser.robust_log_parser import dispatch_log, summarize_logs, filter_logs, export_to_csv
+from log_parser.log_parser import (
+    dispatch_log,
+    summarize_logs,
+    filter_logs,
+    export_to_csv,
+    filter_last_7_days,
+)
 
 # ------------------------------
 # Fixtures
@@ -18,6 +24,7 @@ def sample_logs():
         {"timestamp": "2026-02-20 12:02:00", "level": "ERROR", "message": "err"},
     ]
 
+
 # ------------------------------
 # dispatch_log tests
 # ------------------------------
@@ -25,102 +32,154 @@ def test_dispatch_log_txt(tmp_path):
     txt_file = tmp_path / "sample.log"
     txt_file.write_text("2026-02-20 INFO Everything ok\nBAD LINE HERE")
     logs = dispatch_log(txt_file)
+
     assert len(logs) == 2
     assert logs[0]["level"] == "INFO"
     assert logs[1]["level"] == ""  # malformed line handled
 
+
 def test_dispatch_log_csv(tmp_path):
     csv_file = tmp_path / "sample.csv"
     with open(csv_file, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["timestamp","level","message"])
+        writer = csv.DictWriter(f, fieldnames=["timestamp", "level", "message"])
         writer.writeheader()
-        writer.writerow({"timestamp":"t1","level":"info","message":"msg1"})
-        writer.writerow({"timestamp":"t2","level":"ERROR","message":"msg2"})
+        writer.writerow({"timestamp": "t1", "level": "info", "message": "msg1"})
+        writer.writerow({"timestamp": "t2", "level": "ERROR", "message": "msg2"})
+
     logs = dispatch_log(csv_file)
+
     assert logs[0]["level"] == "INFO"
     assert logs[1]["level"] == "ERROR"
 
+
 def test_dispatch_log_json(tmp_path):
-    data = [{"timestamp":"t","level":"info","message":"m"}]
+    data = [{"timestamp": "t", "level": "info", "message": "m"}]
     json_file = tmp_path / "sample.json"
     json_file.write_text(json.dumps(data))
+
     logs = dispatch_log(json_file)
     assert logs[0]["level"] == "INFO"
+
 
 def test_dispatch_log_xml(tmp_path):
     root = ET.Element("logs")
     e = ET.SubElement(root, "log")
-    ET.SubElement(e,"timestamp").text="t"
-    ET.SubElement(e,"level").text="info"
-    ET.SubElement(e,"message").text="m"
+    ET.SubElement(e, "timestamp").text = "t"
+    ET.SubElement(e, "level").text = "info"
+    ET.SubElement(e, "message").text = "m"
+
     tree = ET.ElementTree(root)
     xml_file = tmp_path / "sample.xml"
     tree.write(xml_file)
+
     logs = dispatch_log(xml_file)
     assert logs[0]["level"] == "INFO"
+
 
 # ------------------------------
 # summarize_logs tests
 # ------------------------------
 def test_summarize_logs(sample_logs):
     summary = summarize_logs(sample_logs)
+
     assert summary["INFO"] == 1
     assert summary["WARNING"] == 1
     assert summary["ERROR"] == 1
     assert summary["TOTAL"] == 3
 
+
 # ------------------------------
 # filter_logs tests
 # ------------------------------
 def test_filter_logs(sample_logs):
-    filtered = filter_logs(sample_logs, ["WARNING","ERROR"])
+    filtered = filter_logs(sample_logs, ["WARNING", "ERROR"])
+
     assert len(filtered) == 2
-    assert all(l["level"] in ["WARNING","ERROR"] for l in filtered)
+    assert all(l["level"] in ["WARNING", "ERROR"] for l in filtered)
+
 
 def test_filter_logs_case_insensitive(sample_logs):
     filtered = filter_logs(sample_logs, ["warning"])
+
     assert len(filtered) == 1
     assert filtered[0]["level"] == "WARNING"
+
+
+# ------------------------------
+# filter_last_7_days tests
+# ------------------------------
+def test_filter_last_7_days():
+    recent = datetime.now().strftime("%Y-%m-%d")
+    old = (datetime.now() - timedelta(days=10)).strftime("%Y-%m-%d")
+
+    logs = [
+        {"timestamp": recent, "level": "INFO", "message": "recent"},
+        {"timestamp": old, "level": "INFO", "message": "old"},
+    ]
+
+    filtered = filter_last_7_days(logs)
+
+    assert len(filtered) == 1
+    assert filtered[0]["message"] == "recent"
+
 
 # ------------------------------
 # export_to_csv tests
 # ------------------------------
 def test_export_csv_creates_file(tmp_path, sample_logs):
-    csv_path = export_to_csv(sample_logs, prefix=str(tmp_path/"out"))
+    csv_path = export_to_csv(sample_logs, tmp_path, prefix="out")
+
     assert Path(csv_path).exists()
+
     with open(csv_path) as f:
         reader = csv.DictReader(f)
         rows = list(reader)
+
         assert len(rows) == 3
         assert rows[0]["level"] == "INFO"
 
-# ------------------------------
-# Robustness edge cases
-# ------------------------------
-def test_empty_logs(tmp_path):
-    csv_path = export_to_csv([], prefix=str(tmp_path/"empty"))
+
+def test_empty_logs_export(tmp_path):
+    csv_path = export_to_csv([], tmp_path, prefix="empty")
+
     assert Path(csv_path).exists()
+
     with open(csv_path) as f:
         content = f.read()
         assert "timestamp" in content  # headers still present
 
+
+# ------------------------------
+# Robustness edge cases
+# ------------------------------
 def test_malformed_lines_dispatch(tmp_path):
     txt_file = tmp_path / "bad.log"
     txt_file.write_text("MALFORMED LINE\nANOTHER BAD LINE")
+
     logs = dispatch_log(txt_file)
+
     assert len(logs) == 2
     assert all("message" in l for l in logs)
-    assert all("level" in l for l in logs)  # even if empty
+    assert all("level" in l for l in logs)
+
 
 def test_missing_fields_csv(tmp_path):
     csv_file = tmp_path / "missing.csv"
     csv_file.write_text("timestamp,level\n2026-01-01,INFO")
+
     logs = dispatch_log(csv_file)
-    assert logs[0]["message"] == ""  # missing field handled
+
+    assert logs[0]["message"] == ""
+
 
 def test_mixed_case_levels(tmp_path):
     txt_file = tmp_path / "mixed.log"
-    txt_file.write_text("2026-01-01 warning Something\n2026-01-01 Error Failed")
+    txt_file.write_text(
+        "2026-01-01 warning Something\n"
+        "2026-01-01 Error Failed"
+    )
+
     logs = dispatch_log(txt_file)
+
     assert logs[0]["level"] == "WARNING"
     assert logs[1]["level"] == "ERROR"
