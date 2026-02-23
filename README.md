@@ -11,6 +11,8 @@
 - Open Terminal a fnd put poetry run log_parser
 - Output folder has your log.
 
+------------------------------------------------------------------------
+
 A lightweight, multi-format log parsing utility built with Python and
 managed using Poetry.
 
