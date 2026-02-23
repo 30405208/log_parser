@@ -3,9 +3,9 @@ name: Test with Poetry
 # Run on push or pull request to main (or change branch as needed)
 on:
   push:
-    branches: [ main ]
+    branches: [main, log_parser]
   pull_request:
-    branches: [ main ]
+    branches: [main, log_parser]
 
 jobs:
   test:
