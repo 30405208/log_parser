@@ -4,13 +4,31 @@
 ![Python](https://img.shields.io/badge/python-3.13-blue)
 ![Poetry](https://img.shields.io/badge/dependency%20manager-poetry-blueviolet)
 ![Status](https://img.shields.io/badge/status-active-success)
-![Tests](https://github.com/username/repo/actions/workflows/ci.yml/badge.svg)
+
+
 
 # Tl:Dr: 
 - Drop your logs in to the logs folder
 - You need Python and Poetry
 - Open Terminal a fnd put poetry run log_parser
 - Output folder has your log.
+
+## Project Status
+
+This project is **functionally complete**:
+
+- All functions are implemented and tested with unit tests.
+- Tests pass locally and cover all key functionality.
+- Logs are parsed, filtered, and exported as intended.
+- README is complete and formatted for clarity.
+
+### Notes / Future Improvements
+
+- CI (Continuous Integration) via GitHub Actions can be added to automatically run tests on push or pull requests.
+- Optional linting/formatting checks (e.g., `black`, `flake8`) can be added for code style enforcement.
+- Coverage reporting and badges can be added to track test coverage and status.
+
+These improvements are **nice-to-have** but not required for the current functionality.
 
 ------------------------------------------------------------------------
 
