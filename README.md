@@ -1,155 +1,170 @@
 # Log Parser
+## "Logs for daaaaays bro"
 
-A command-line tool that detects and parses multiple log file formats,
-extracts log levels, and summarises activity.
+# Tl:Dr: 
+- Drop your logs in to the logs folder
+- You need Python and Poetry
+- Open Terminal and put poetry run log_parser
+- Output folder has your log.
+
+
+![Python](https://img.shields.io/badge/python-3.13-blue)
+![Poetry](https://img.shields.io/badge/dependency%20manager-poetry-blueviolet)
+![Status](https://img.shields.io/badge/status-active-success)
+
+A lightweight, multi-format log parsing utility built with Python and
+managed using Poetry.
+
+It scans a `logs/` directory, parses supported log formats, summarizes
+warnings and errors, optionally filters logs from the last 7 days, and
+exports selected results to CSV.
+
+------------------------------------------------------------------------
+
+## Table of Contents
+
+-   Features
+-   Project Structure
+-   Installation (Poetry)
+-   Usage
+-   Running Tests
+-   Supported Formats
+-   Example Output
+-   License
+
+------------------------------------------------------------------------
 
 ## Features
 
--   Automatic file type detection (TXT, LOG, JSON, CSV, XML)
--   Fast heuristic verification
--   Interactive log selection
--   Error / Warning / Info extraction
--   Summary reporting
--   Optional CSV export with preview
+-   Supports `.txt`, `.log`, `.csv`, `.json`, `.xml`
+-   Normalizes log levels to uppercase
+-   Gracefully handles malformed log lines
+-   Optional filtering for logs from the last 7 days
+-   Export options:
+    -   Warnings only
+    -   Errors only
+    -   Warnings + Errors
+-   Timestamped CSV export
+-   Clean summary output (no timestamp clutter)
 
 ------------------------------------------------------------------------
 
 ## Project Structure
 
-    log_parser/
-    ├── logs/                # Generated test logs
-    ├── output/              # CSV export folder
-    ├── src/log_parser/
-    │   ├── parser.py        # CLI entry point
-    │   ├── log_dispatcher.py
-    │   ├── export_csv.py
-    │   └── generate_logs.py
-    └── pyproject.toml
+. ├── logs │ ├── logs_20260218_115837.csv │ ├──
+logs_20260218_115837.json │ ├── logs_20260218_115837.log │ ├──
+logs_20260218_115837.txt │ └── logs_20260218_115837.xml ├── output │ └──
+selected_logs_20260223_133908.csv ├── poetry.lock ├── pyproject.toml ├──
+README.md ├── src │ └── log_parser │ ├── **init**.py │ ├── **pycache** │
+└── log_parser.py └── tests ├── **init**.py └──
+test_robust_log_parser.py
+
+Notes: - `logs/` → Input log files - `output/` → Generated CSV exports -
+`src/log_parser/` → Application source code - `tests/` → Pytest test
+suite - `pyproject.toml` → Poetry configuration
 
 ------------------------------------------------------------------------
 
-## Installation
+## Installation (Poetry)
 
-Requires:
+This project uses Poetry for dependency management and packaging.
 
--   Python 3.13+
--   Poetry
+### 1. Install Poetry
 
-Install dependencies:
+https://python-poetry.org/docs/
 
-``` bash
-poetry install
-```
+### 2. Install dependencies
 
-**Optional:** for prettier CSV preview tables in the terminal:
+From the project root:
 
-``` bash
-poetry add tabulate
-```
+    poetry install
 
-If `tabulate` is not installed, the preview will still appear in plain text.
+### 3. Activate the virtual environment
 
-------------------------------------------------------------------------
+    poetry env activate
 
-## Generate Test Logs
+Or run commands directly with:
 
-Generate up to 15 random logs:
-
-``` bash
-poetry run python src/log_parser/generate_logs.py
-```
-
-When prompted, set the output directory to:
-
-    logs
-
-Logs will be written to the `/logs` folder.
+    poetry run <command>
 
 ------------------------------------------------------------------------
 
-## Run the Log Parser
+## Usage
 
-Launch the interactive CLI:
+Run the application with:
 
-``` bash
-poetry run log_parser
-```
+    poetry run python src/log_parser/log_parser.py
 
-Default path: logs
+You will be prompted to:
 
-You will:
+1.  Optionally filter logs from the last 7 days
+2.  Choose which log levels to export
 
-Be shown a timestamp for every 
+The resulting CSV file will be written to:
 
-Choose which logs to export:
-1. Warnings only
-2. Errors only
-3. Warnings + Errors
-4. Everything
-Enter 1,2,3,4 [4]: 
+    output/selected_logs_YYYYMMDD_HHMMSS.csv
 
 ------------------------------------------------------------------------
 
-## Example Output
+## Running Tests
 
-    ? Select a log file: logs_20260218_115837.txt
+Tests are written using pytest.
 
-    Detected log type: txt
-    Processing TXT log...
+Run tests with:
 
-    --- Log Summary ---
-    Total lines: 500
-    INFO: 420
-    WARNING: 60
-    ERROR: 20
-
-    --- Error Lines ---
-    2026-02-18 11:58:39 ERROR Database connection failed
-    2026-02-18 12:01:12 ERROR Timeout occurred
-
-    --- CSV Export Preview ---
-    +---------------------+---------+-------------------------------+
-    | timestamp           | level   | message                       |
-    +---------------------+---------+-------------------------------+
-    | 2026-02-18 11:50:12 | INFO    | User logged in                |
-    | 2026-02-18 11:51:07 | WARNING | Disk space low                |
-    | 2026-02-18 11:52:34 | ERROR   | Failed login attempt          |
-    +---------------------+---------+-------------------------------+
-    ...and 497 more rows
+    poetry run pytest
 
 ------------------------------------------------------------------------
 
 ## Supported Formats
 
--   .txt
--   .log
--   .json
--   .csv
--   .xml
+### TXT / LOG
 
-The parser automatically detects file type and dispatches to the correct
-processor.
+Expected format:
+
+    YYYY-MM-DD LEVEL Message text
+    YYYY-MM-DD HH:MM:SS LEVEL Message text
+
+Malformed lines are preserved but assigned empty timestamp and level
+fields.
+
+### CSV
+
+Required headers:
+
+    timestamp,level,message
+
+### JSON
+
+Structure:
+
+    [
+      {"timestamp": "...", "level": "...", "message": "..."},
+      ...
+    ]
+
+### XML
+
+Structure:
+
+    <logs>
+      <log>
+        <timestamp>...</timestamp>
+        <level>...</level>
+        <message>...</message>
+      </log>
+    </logs>
 
 ------------------------------------------------------------------------
 
-## What It Does
+## Example Output
 
-For each log file:
+--- Log Summary --- ERROR: 12 WARNING: 6
 
--   Reads entries efficiently
--   Extracts log level (INFO / WARNING / ERROR)
--   Counts occurrences
--   Prints summary statistics
--   Displays full error entries
--   Optionally previews and exports logs to CSV
+Exported CSV to output/selected_logs_20260223_133908.csv
 
 ------------------------------------------------------------------------
 
-## Planned Improvements
+## License
 
--   CLI flags (`--errors-only`)
--   Export summary to CSV
--   Time-based filtering
--   Pattern detection
--   Recurring error analysis
-
+MIT License --- free to use and modify.
