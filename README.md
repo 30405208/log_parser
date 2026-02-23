@@ -8,7 +8,7 @@
 # Tl:Dr: 
 - Drop your logs in to the logs folder
 - You need Python and Poetry
-- Open Terminal and put poetry run log_parser
+- Open Terminal a fnd put poetry run log_parser
 - Output folder has your log.
 
 A lightweight, multi-format log parsing utility built with Python and
@@ -50,6 +50,8 @@ exports selected results to CSV.
 
 ## Project Structure
 
+```
+
 .
 ├── logs
 │   ├── logs_20260218_115837.csv
@@ -75,6 +77,7 @@ exports selected results to CSV.
     │   └── test_robust_log_parser.cpython-313-pytest-9.0.2.pyc
     └── test_robust_log_parser.py
 
+```
 
 Notes: - `logs/` → Input log files - `output/` → Generated CSV exports -
 `src/log_parser/` → Application source code - `tests/` → Pytest test
