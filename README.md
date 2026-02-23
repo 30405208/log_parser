@@ -72,16 +72,21 @@ Logs will be written to the `/logs` folder.
 Launch the interactive CLI:
 
 ``` bash
-poetry run log-parser
+poetry run log_parser
 ```
+
+Default path: logs
 
 You will:
 
-1.  See a list of available logs in `../../logs/`
-2.  Select one using arrow keys
-3.  Press Enter
-4.  View a structured summary
-5.  Optionally export the processed logs to CSV (with a preview)
+Be shown a timestamp for every 
+
+Choose which logs to export:
+1. Warnings only
+2. Errors only
+3. Warnings + Errors
+4. Everything
+Enter 1,2,3,4 [4]: 
 
 ------------------------------------------------------------------------
 

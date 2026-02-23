@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 # robust_log_parser.py
-import os, csv, json
+import os
+import csv
+import json
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from datetime import datetime
 from typing import List, Dict
 
 # --- Module-level helpers ---
-def dispatch_log(file_path) -> List[Dict]:
+def dispatch_log(file_path: Path) -> List[Dict]:
     logs = []
-    ext = Path(file_path).suffix.lower()
+    ext = file_path.suffix.lower()
     with open(file_path, "r", encoding="utf-8") as f:
         if ext in [".txt", ".log"]:
             for line in f:
@@ -68,11 +70,11 @@ def filter_logs(logs: List[Dict], levels: List[str]) -> List[Dict]:
     levels_upper = [lvl.upper() for lvl in levels]
     return [l for l in logs if l.get("level","").upper() in levels_upper]
 
-def export_to_csv(logs: List[Dict], prefix="logs") -> str:
-    folder = Path("../../output")
-    folder.mkdir(exist_ok=True)
-    filename = folder / f"{prefix}.csv"
-    with open(filename,"w",newline="") as f:
+def export_to_csv(logs: List[Dict], output_dir: Path, prefix="logs") -> str:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = output_dir / f"{prefix}_{timestamp}.csv"
+    with open(filename, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["timestamp","level","message"])
         writer.writeheader()
         writer.writerows(logs)
@@ -90,27 +92,46 @@ def select_levels_menu() -> List[str]:
     if choice=="3": return ["WARNING","ERROR"]
     return []  # everything
 
-def full_pipeline(folder: str = ".") -> None:
-    folder_path = Path(__file__).parent / "../../logs"
-    folder_path = folder_path.resolve()
+def full_pipeline():
+    # --- Project-root based folders ---
+    base_dir = Path(__file__).parent.parent.parent.resolve()  # Project root
+    logs_dir = base_dir / "logs"
+    output_dir = base_dir / "output"
+
     all_logs = []
+
+    if not logs_dir.exists():
+        print(f"Logs folder not found: {logs_dir}")
+        return
+
+    # Collect logs
     for ext in ["txt","log","csv","json","xml"]:
-        for f in folder_path.glob(f"*.{ext}"):
+        for f in logs_dir.glob(f"*.{ext}"):
+            print(f"Found log: {f}")
             all_logs.extend(dispatch_log(f))
+
     if not all_logs:
         print("No logs found in folder.")
         return
+
+    # Summary
     counts = summarize_logs(all_logs)
     print("\n--- Log Summary ---")
-    for k,v in counts.items():
+    for k, v in counts.items():
         print(f"{k}: {v}")
+
+    # Filter
     levels_to_export = select_levels_menu()
     if levels_to_export:
         all_logs = filter_logs(all_logs, levels_to_export)
-    csv_path = export_to_csv(all_logs, prefix="selected_logs")
+
+    # Export
+    csv_path = export_to_csv(all_logs, output_dir, prefix="selected_logs")
     print(f"\nExported CSV to {csv_path}")
 
-# --- Entry point for Poetry ---
+# --- Entry point ---
 def main():
-    folder_input = input("Enter folder path containing logs [current]: ").strip() or "."
-    full_pipeline(folder_input)
+    full_pipeline()
+
+if __name__ == "__main__":
+    main()
