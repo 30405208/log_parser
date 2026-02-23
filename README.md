@@ -1,16 +1,15 @@
 # Log Parser
 ## "Logs for daaaaays bro"
 
+![Python](https://img.shields.io/badge/python-3.13-blue)
+![Poetry](https://img.shields.io/badge/dependency%20manager-poetry-blueviolet)
+![Status](https://img.shields.io/badge/status-active-success)
+
 # Tl:Dr: 
 - Drop your logs in to the logs folder
 - You need Python and Poetry
 - Open Terminal and put poetry run log_parser
 - Output folder has your log.
-
-
-![Python](https://img.shields.io/badge/python-3.13-blue)
-![Poetry](https://img.shields.io/badge/dependency%20manager-poetry-blueviolet)
-![Status](https://img.shields.io/badge/status-active-success)
 
 A lightweight, multi-format log parsing utility built with Python and
 managed using Poetry.
@@ -51,13 +50,31 @@ exports selected results to CSV.
 
 ## Project Structure
 
-. ├── logs │ ├── logs_20260218_115837.csv │ ├──
-logs_20260218_115837.json │ ├── logs_20260218_115837.log │ ├──
-logs_20260218_115837.txt │ └── logs_20260218_115837.xml ├── output │ └──
-selected_logs_20260223_133908.csv ├── poetry.lock ├── pyproject.toml ├──
-README.md ├── src │ └── log_parser │ ├── **init**.py │ ├── **pycache** │
-└── log_parser.py └── tests ├── **init**.py └──
-test_robust_log_parser.py
+.
+├── logs
+│   ├── logs_20260218_115837.csv
+│   ├── logs_20260218_115837.json
+│   ├── logs_20260218_115837.log
+│   ├── logs_20260218_115837.txt
+│   └── logs_20260218_115837.xml
+├── output (Creates itself on 1st run)
+├── poetry.lock
+├── pyproject.toml
+├── README.md
+├── src
+│   └── log_parser
+│       ├── __init__.py
+│       ├── __pycache__
+│       │   ├── __init__.cpython-313.pyc
+│       │   └── log_parser.cpython-313.pyc
+│       └── log_parser.py
+└── tests
+    ├── __init__.py
+    ├── __pycache__
+    │   ├── __init__.cpython-313.pyc
+    │   └── test_robust_log_parser.cpython-313-pytest-9.0.2.pyc
+    └── test_robust_log_parser.py
+
 
 Notes: - `logs/` → Input log files - `output/` → Generated CSV exports -
 `src/log_parser/` → Application source code - `tests/` → Pytest test
