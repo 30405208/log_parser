@@ -6,7 +6,6 @@
 ![Status](https://img.shields.io/badge/status-active-success)
 
 
-
 # Tl:Dr: 
 - Drop your logs in to the logs folder
 - You need Python and Poetry
