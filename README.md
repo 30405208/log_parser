@@ -80,7 +80,7 @@ exports selected results to CSV.
 │   ├── logs_20260218_115837.log
 │   ├── logs_20260218_115837.txt
 │   └── logs_20260218_115837.xml
-├── output (Created itself on 1st run)
+├── output (Created automatically when needed - after 1st run.)
 ├── poetry.lock
 ├── pyproject.toml
 ├── README.md
